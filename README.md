@@ -1,10 +1,9 @@
-
 <table>
   <thead><tr>
     <th>Screenshots</th>
   </tr></thead>
   <tbody><tr>
-    <td><img src="https://raw.github.com/ru-nekit-android/Kiosk/master/screenshots/1.png"/></td><td>Autorization screen</td>
+    <td><img src="https://raw.github.com/ru-nekit-android/Kiosk/master/screenshots/1.png"/></td>
 
 	</tr>
 <tr>
