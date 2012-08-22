@@ -1,8 +1,5 @@
 Information kiosk. Info is a text, html pages, images that taken from file system. 
-<<<<<<< HEAD
 
-=======
->>>>>>> Update readme
 <table>
   <thead><tr>
     <th>Screenshots</th>
