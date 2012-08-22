@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mobile:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+							xmlns:s="library://ns.adobe.com/flex/spark"
+							xmlns:mobile="spark.components.*"
+							height="100%" enterFrame="mainEnterFrameHandler(event)"
+							firstView="views.HomeView">
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		
+		s|View{
+			skinClass: ClassReference("skin.ViewNavigatorSkin");
+		}
+		
+		s|Button
+		{
+			/*skinClass: ClassReference("skin.RoundedButtonSkin");*/
+		}
+		
+		s|ActionBar
+		{
+			titleAlign: center;
+		}
+		
+		s|ActionBar #titleDisplay
+		{
+			fontSize: 48;
+		}
+		
+		@font-face {
+			src: url("font/CALIBRI.TTF");
+			fontFamily: Calibri;
+			advancedAntiAliasing: true;
+			fontStyle: normal;
+			fontWeight: normal;
+			embedAsCFF:false;
+		}
+		
+		@font-face {
+			src: url("font/CALIBRIB.TTF");
+			fontFamily: Calibri;
+			advancedAntiAliasing: true;
+			fontStyle: normal;
+			fontWeight: bold;
+			embedAsCFF: false;
+		}
+		
+		@font-face {
+			src: url("font/CALIBRI.TTF");
+			fontFamily: Calibri;
+			advancedAntiAliasing: true;
+			fontStyle: normal;
+			fontWeight: normal;
+			embedAsCFF:true;
+		}
+		
+		@font-face {
+			src: url("font/CALIBRIB.TTF");
+			fontFamily: Calibri;
+			advancedAntiAliasing: true;
+			fontStyle: normal;
+			fontWeight: bold;
+			embedAsCFF: true;
+		}
+		
+		global {
+			fontFamily: Calibri;
+		}  
+		
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+
+			public static var WAIT:Number = 30;
+			
+			private function mainEnterFrameHandler(event:Event):void
+			{
+				if( NativeApplication.nativeApplication.timeSinceLastUserInput > WAIT )
+				{
+					this.navigator.popToFirstView();
+				}
+				
+				if( stage )
+				{
+					if( stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE)
+					{
+						stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+					}
+				}	
+			}
+			
+		]]>
+	</fx:Script>
+	
+</mobile:ViewNavigatorApplication>

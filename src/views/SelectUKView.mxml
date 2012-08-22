@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:model="model.*"
+		xmlns:views="views.*"
+		backgroundColor="0xffffff"
+		title="ООО ''Управляющая компания Первореческого района''" 
+		viewActivate="activateHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import model.MenuItemModel;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.ViewNavigatorEvent;
+			import spark.transitions.SlideViewTransition;
+			
+			[Bindable]
+			private var menuDataProvider:ArrayCollection;
+			private var item:MenuItemModel;
+			
+			private function backClickHandler(event:MouseEvent):void
+			{
+				this.navigator.popView(slide_back);
+			}
+			
+			private function menuChangeHandler(event:IndexChangeEvent):void
+			{
+				this.navigator.pushView(SimpleHTMLView, List(event.currentTarget).selectedItem, null, slide);
+			}
+			
+			private function activateHandler(event:ViewNavigatorEvent):void
+			{
+				item = data as MenuItemModel;
+				menuDataProvider 	= new ArrayCollection;
+				var path:String 	= "data/UK/" + item.data; 
+				menuDataProvider.addItem(new MenuItemModel("Общая информация", 															path + "/info.html"));
+				menuDataProvider.addItem(new MenuItemModel("Перечень домов", 															path + "/builds.html"));
+				menuDataProvider.addItem(new MenuItemModel("Основные показатели финансово-хозяйственной деятельности", 					path + "/figures.html"));
+				menuDataProvider.addItem(new MenuItemModel("Выполняемые работы", 														path + "/works.html"));
+				menuDataProvider.addItem(new MenuItemModel("Случаи привлечения Управлящей компании к административной ответственности", path + "/responsibility.html"));
+				menu.dataProvider = menuDataProvider;
+			}
+			
+			private function homeClickHandler(event:MouseEvent):void
+			{
+				navigator.popToFirstView(slide_back);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+		<s:SlideViewTransition id="slide_back" duration="1000" direction="right"/>
+		<s:SlideViewTransition id="slide" duration="1000"/>
+		
+	</fx:Declarations>
+	
+	<s:navigationContent>
+		<s:Button label="Назад" fontSize="24" click="backClickHandler(event)" height="60" width="120" skinClass="spark.skins.mobile.BeveledBackButtonSkin"/>
+	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:Button label="На главную" fontSize="24" click="homeClickHandler(event)" height="60"/>
+	</s:actionContent>
+	
+	<s:VGroup gap="40" paddingBottom="30" paddingLeft="100" paddingRight="100" horizontalAlign="center" verticalAlign="top"
+			  paddingTop="30" horizontalCenter="0" verticalCenter="0" depth="100">
+		
+		<s:List id="menu"
+				change="menuChangeHandler(event);" 
+				fontSize="32" requireSelection="false"
+				skinClass="skin.ListSkin" >
+			<s:layout>
+				<s:VerticalLayout gap="25"/>
+			</s:layout>
+			<s:itemRenderer>
+				<fx:Component>
+					<s:ItemRenderer width="100%" autoDrawBackground="false">
+						<s:Button width="1200" height="100" label="{data.name}"/>
+					</s:ItemRenderer>
+				</fx:Component>
+			</s:itemRenderer>
+		</s:List>
+	</s:VGroup>
+	
+	<s:SWFLoader source="@Embed(source='line.swf')" verticalCenter="0" horizontalCenter="0" scaleX="2" scaleY="2"/>
+	
+</s:View>

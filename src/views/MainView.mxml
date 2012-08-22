@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:model="model.*"
+		backgroundColor="0xffffff"
+		title="ООО ''Управляющая компания Первореческого района''" 
+		xmlns:views="views.*"
+		>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import spark.events.IndexChangeEvent;
+			import spark.transitions.SlideViewTransition;
+			
+			private function backClickHandler(event:MouseEvent):void
+			{
+				this.navigator.popToFirstView(slide_back);
+			}
+			
+			private function menuChangeHandler(event:IndexChangeEvent):void
+			{
+				this.navigator.pushView(SimpleHTMLView, List(event.currentTarget).selectedItem, null, slide);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+		<s:SlideViewTransition id="slide_back" duration="1000" direction="right"/>
+		<s:SlideViewTransition id="slide" duration="1000"/>
+		
+		<s:ArrayCollection id="menuDataProvider">
+			<model:MenuItemModel data="data/UK_All/main.html"	 	name="Общая информация"/>
+			<model:MenuItemModel data="data/UK_All/work.html" 		name="Принципы работы"/>
+			<model:MenuItemModel data="data/UK_All/addr.html" 		name="Адресный список"/>
+			<model:MenuItemModel data="data/UK_All/struct.html" 	name="Структура компании"/>
+			<model:MenuItemModel data="data/UK_All/contacts.html" 	name="Контакты"/>
+		</s:ArrayCollection>
+		
+	</fx:Declarations>
+	
+	<s:navigationContent>
+		<s:Button label="Назад" fontSize="24" click="backClickHandler(event)" height="60" width="120" skinClass="spark.skins.mobile.BeveledBackButtonSkin"/>
+	</s:navigationContent>
+	
+	<s:VGroup 
+		gap="40" paddingBottom="20" paddingLeft="100" paddingRight="100"
+		paddingTop="30" depth="10"
+		horizontalCenter="0"
+		>
+		
+		<!--<s:Spacer height="200"/>-->
+		
+		<s:Group width="100%">
+			<s:List id="menu" height="100%" horizontalCenter="0"
+					change="menuChangeHandler(event);" 
+					dataProvider="{menuDataProvider}" fontSize="48" requireSelection="false"
+					skinClass="skin.ListSkin" >
+				<s:layout>
+					<s:VerticalLayout gap="25"/>
+				</s:layout>
+				<s:itemRenderer>
+					<fx:Component>
+						<s:ItemRenderer width="100%" autoDrawBackground="false">
+							<s:Button width="800" height="100" label="{data.name}" useHandCursor="true" buttonMode="true" mouseChildren="false"/>
+						</s:ItemRenderer>
+					</fx:Component>
+				</s:itemRenderer>
+			</s:List>
+		</s:Group>
+	</s:VGroup>
+	
+	<s:SWFLoader source="@Embed(source='line.swf')" verticalCenter="0" horizontalCenter="0" scaleX="2" scaleY="2"/>
+	
+</s:View>

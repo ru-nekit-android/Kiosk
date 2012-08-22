@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mobile:View 
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:model="model.*"
+	xmlns:mobile="spark.components.*"
+	title="Главное меню" 
+	xmlns:skin="skin.*"
+	viewActivate="viewActivateHandler(event)"
+	>
+	
+	<fx:Script>
+		<![CDATA[
+			import spark.events.IndexChangeEvent;
+			import spark.events.ViewNavigatorEvent;
+			
+			private function menuChangeHandler(event:IndexChangeEvent):void
+			{
+				
+				var item:Object = List(event.currentTarget).selectedItem;
+				if( item.data == "uk_all" ){
+					this.navigator.pushView(MainView, item, null, slide);
+				}
+				else if( item.data == "uk" ){
+					this.navigator.pushView(UKView, item, null, slide);
+				}	
+				else if( item.data == "building" ){
+					this.navigator.pushView(StreetView, item, null, slide);
+				}
+			}
+			
+			protected function viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				navigator.actionBar.height = 80;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+		<s:SlideViewTransition id="slide" duration="1000"/>
+		
+		<s:ArrayCollection id="menuDataProvider">
+			<model:MenuItemModel data="uk_all"
+								 name="ООО ''Управляющая компания Первореческого района''"/>
+			<model:MenuItemModel data="uk"
+								 name="ООО ''Управляющие компании Первореческого района номер 1-21''"/>
+			<model:MenuItemModel data="building"
+								 name="Дома ''Управляющей компании Первореческого района''"/>
+		</s:ArrayCollection>
+		
+	</fx:Declarations>
+	
+	
+	<s:VGroup
+		gap="0"
+		paddingBottom="20" 
+		paddingLeft="100"
+		paddingRight="100"
+		paddingTop="20"
+		depth="1"
+		horizontalCenter="0"
+		verticalCenter="0"
+		>
+		<s:Image source="@Embed(source='logo.png')"/>
+		
+		<s:Spacer height="100"/>
+		
+		<s:Group width="100%" height="100%">
+			<s:List id="menu" change="menuChangeHandler(event);"
+					dataProvider="{menuDataProvider}" fontSize="32" horizontalCenter="0"
+					requireSelection="false" skinClass="skin.ListSkin">
+				<s:layout>
+					<s:VerticalLayout gap="25"/>
+				</s:layout>
+				<s:itemRenderer>
+					<fx:Component>
+						<s:ItemRenderer width="100%" autoDrawBackground="false"> 
+							<s:Button width="1000" height="100" label="{data.name}" useHandCursor="true" buttonMode="true" mouseChildren="false"/>
+						</s:ItemRenderer>
+					</fx:Component>
+				</s:itemRenderer>
+			</s:List>
+		</s:Group>
+		
+	</s:VGroup>
+	
+	<s:SWFLoader source="@Embed(source='home.swf')" verticalCenter="0" horizontalCenter="0" scaleX="2" scaleY="2"/>
+	
+</mobile:View>

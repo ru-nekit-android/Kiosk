@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	viewActivate="init();" remove="removeHandler();"
+	>
+	
+	<fx:Declarations>
+		
+		<s:SlideViewTransition id="slide_back" direction="right" duration="1000"/>
+		<s:SlideViewTransition id="slide" direction="left" duration="1000"/>
+		<s:Fade id="fade" target="{scrollContainer}" alphaFrom="0" alphaTo="1" duration="1000"/>
+		
+	</fx:Declarations>
+	
+	<s:navigationContent>
+		<s:Button label="Назад" fontSize="24" click="backClickHandler(event)" height="60" width="120" skinClass="spark.skins.mobile.BeveledBackButtonSkin"/>
+	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:Button label="На главную" fontSize="24" click="homeClickHandler(event)" height="60"/>
+	</s:actionContent>
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import mx.binding.utils.*;
+			import model.MenuItemModel;
+			
+			private var html:HTMLLoader = new HTMLLoader;
+			private var urlReq:URLRequest;
+			private var item:MenuItemModel;
+			private var history:Vector.<URLRequest> = new Vector.<URLRequest>;
+			private var _init:Boolean = false;
+			
+			private function init():void
+			{			
+				KioskMobile.WAIT = 120;
+				htmlHolder.addChild(html);
+				scrollContainer.visible = true;
+				fade.play();
+			}
+			
+			private function locationChange(event:Event):void
+			{
+				///if( html.location.substr(html.location.length - 3) == "jpg" )
+				//{
+				if( !_init ){
+					history.push(urlReq);
+					_init = true;
+				}
+				//}
+			}
+			
+			override public function set data(value:Object):void
+			{
+				_init = false;
+				if( !html.hasEventListener(Event.HTML_RENDER) )
+				{
+					html.addEventListener(Event.HTML_RENDER, updateHTML);
+					html.addEventListener(Event.COMPLETE, updateHTML);
+				}
+				super.data 	= value;
+				item 		= value as MenuItemModel;
+				location 	= item.data as String;
+				title 		= item.name;
+			}
+			
+			public function set location(value:String):void
+			{
+				var file:File = File.applicationDirectory.resolvePath(value);	
+				urlReq = new URLRequest((file.url));
+				html.load(urlReq);
+				if( !html.hasEventListener(Event.LOCATION_CHANGE) )
+				{
+					html.addEventListener(Event.LOCATION_CHANGE, locationChange);
+				}
+			}
+			
+			private function updateHTML(event:Event = null):void
+			{
+				scrollContainer.width 	= stage.stageWidth;
+				scrollContainer.height 	= stage.stageHeight - this.navigator.actionBar.height;
+				scrollContainer.x 		= 0;
+				scrollContainer.y 		= 0;
+				var maximumH:Number 	= html.contentWidth - scrollContainer.width - 50;	
+				if( maximumH > 0 )
+				{
+					html.height 	= scrollContainer.height - 50; 
+					hScroll.visible = true;
+					hScroll.maximum = maximumH;
+				}
+				else
+				{
+					hScroll.visible = false;
+					html.height 	= scrollContainer.height; 
+					vScroll.bottom 	= 0;
+				}
+				var maximumV:Number =  html.contentHeight - scrollContainer.height;
+				if( maximumV > 0 )
+				{
+					html.width  	= scrollContainer.width - 50;
+					vScroll.visible = true;
+					vScroll.maximum = maximumV;
+				}
+				else
+				{
+					html.width  	= stage.stageWidth;
+					vScroll.visible = false;
+					vScroll.right 	= 0;
+				}
+			}
+			
+			private function backClickHandler(event:MouseEvent):void
+			{
+				if( history.length <= 1 )
+				{
+					this.navigator.popView(slide_back);
+				}
+				else
+				{
+					vScroll.value = 0;
+					hScroll.value = 0;
+					html.load(history.shift());
+				}
+			}
+			
+			private function removeHandler():void
+			{
+				html.removeEventListener(Event.LOCATION_CHANGE, locationChange);
+				html.removeEventListener(Event.HTML_RENDER, updateHTML);
+				html.removeEventListener(Event.COMPLETE, updateHTML);
+				this.htmlHolder.removeChild(html);
+				KioskMobile.WAIT = 30;
+			}
+			
+			private function homeClickHandler(event:MouseEvent):void
+			{
+				navigator.popToFirstView(slide_back);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Group id="scrollContainer" visible="false">
+		<mx:UIComponent id="htmlHolder"/>
+		<s:VScrollBar  change="{html.scrollV = vScroll.value}" id="vScroll" right="0" top="0" bottom="50" skinClass="skin.VerticalScrollBarSkin"/>
+		<s:HScrollBar change="{html.scrollH = hScroll.value}" id="hScroll" left="0" right="50" bottom="0" skinClass="skin.HorizontalScrollBarSkin"/>
+	</s:Group> 
+</s:View>
